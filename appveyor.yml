@@ -33,13 +33,13 @@ configuration: Release
 
 before_build:
   - cmd: dotnet --version
-  - cmd: dotnet restore ./HousePlatform/HousePlatform.csproj --verbosity m
+  - cmd: dotnet restore ./AppVeyorLinuxDeploymentTest/AppVeyorLinuxDeploymentTest.csproj --verbosity m
 build:
   publish_wap_xcopy: true
   parallel: true
   verbosity: detailed
 build_script:
-  - cmd: dotnet publish ./HousePlatform/HousePlatform.csproj
+  - cmd: dotnet publish ./AppVeyorLinuxDeploymentTest/AppVeyorLinuxDeploymentTest.csproj
 
 #---------------------------------#
 #       test configuration       #
