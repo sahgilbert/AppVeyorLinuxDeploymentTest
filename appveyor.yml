@@ -1,0 +1,75 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+version: 1.0.{build}-{branch}
+
+branches:
+  only:
+   - master
+ 
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+clone_depth: 1
+
+image: Visual Studio 2022
+
+cache:
+  - '%LocalAppData%\NuGet\Cache'    # NuGet < v3
+  - '%LocalAppData%\NuGet\v3-cache' # NuGet v3
+
+init:
+  - cmd: git config --global core.autocrlf true
+  
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+platform: Any CPU
+
+configuration: Release
+
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./HousePlatform/HousePlatform.csproj --verbosity m
+build:
+  publish_wap_xcopy: true
+  parallel: true
+  verbosity: detailed
+build_script:
+  - cmd: dotnet publish ./HousePlatform/HousePlatform.csproj
+
+#---------------------------------#
+#       test configuration       #
+#---------------------------------#
+test_script:
+  - cmd: dotnet build ./UnitTests/UnitTests.csproj --verbosity m
+  - cmd: dotnet test
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+ - path: '.\HousePlatform\bin\Any CPU\Release\net7.0\publish'
+   name: WebsiteSourceCode
+   type: Zip
+  
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+deploy:
+- provider: AzureAppServiceZipDeploy
+  server: https://house-platform-dev.scm.azurewebsites.net:443/msdeploy.axd?site=house-platform-dev
+  website: house-platform-dev
+  username: $house-platform-dev
+  password:
+    secure: Tn4uvnR63Vzm4045D+xUnABHny9FWO4LAJnB0aLqVrDjnNHvjedQsaYO2rwHBXErbbCOFUN4LvLn0zLl1R1BLg==
+  artifact: WebsiteSourceCode
+  aspnet_core: true
+  app_offline: true
+  do_not_use_checksum: true
+  aspnet_core_force_restart: true
