@@ -53,7 +53,7 @@ test_script:
 #---------------------------------#
 
 artifacts:
- - path: '.\HousePlatform\bin\Any CPU\Release\net7.0\publish'
+ - path: '.\AppVeyorLinuxDeploymentTest\bin\Any CPU\Release\net7.0\publish'
    name: WebsiteSourceCode
    type: Zip
   
